@@ -1,0 +1,33 @@
+/*
+Default Color Scheme:
+light backgrounds (tan): #FCF9EF
+header & footer background (dark blue): #0A2B38
+bright text (yellow): #FCD030
+medium text/background (blue): #3884A3
+icon/attention (pink) : #CF1666
+
+ */
+
+header {
+    background-color:#3884A3;
+    color:#092834;
+}
+body {
+    background-color:#F7F0D4;
+    color:#092834;
+}
+footer{
+    background-color:#0A2B38;
+    color:#FCD030;
+}
+p {color:#0A2B38;}
+h1 {color:#FCD030;}
+h2 {color:#FCD030;}
+h3 {color:#FCD030;}
+h4 {color:#FCD030;}
+h5 {color:#FCD030;}
+h6 {color:#FCD030;}
+
+.text-responsive {
+    font-size: calc(100% + 1vw + 1vh);
+}
