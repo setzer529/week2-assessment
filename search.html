@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.css/">
     <link rel="stylesheet" href="css/default.css">
     <meta charset="UTF-8">
     <meta name="author" content="James Howell">
@@ -25,8 +25,8 @@
 
 </header>
 
-<body style="padding-top:px">
-<nav class="navbar navbar-expand-sm sticky-top" style="background-color:#0A2B38; color:#FCD030;">
+<body style="padding-top:0">
+<nav class="navbar navbar-expand sticky-top" style="background-color:#0A2B38; color:#FCD030;">
     <a class="navbar-brand" href="index.html">
         <img src="images/logo.png" alt="UR" style="width:100px;">
     </a>
@@ -52,74 +52,45 @@
     <div class="row">
         <div class="col-sm-5">
             <form>
-                <div class="form-group">
+                <div class="form-group my-2">
                     <label for="minprice">How much should you spend?</label>
                     <input type="number" class="form-control" id="minprice" value="">
                 </div>
-                <div class="form-group">
+                <div class="form-group my-2">
                     <label for="maxprice">How much COULD you spend?</label>
                     <input type="number" class="form-control" id="maxprice" value="">
                 </div>
-            <button id="searchbutton" type="button" class="btn">Submit</button>
+            <button id="searchbutton" type="button" class="btn bg-darkblue text-yellow my-2">Submit</button>
             </form>
         </div>
-        <div class="col-sm-7 d-none d-md-block">
+        <div class="col-md-7 d-none d-md-block">
 
         </div>
     </div>
 
-    <div class="container-sm" style="margin-top:30px; margin-bottom:30px;">
-        <div class="d-sm-flex flex-row flex-nowrap overflow-auto" id="results">
-            <div type="button" onclick="cardDetail(this.id)" id="1" class="card card-body"><img src="http://3.21.225.172:8080/api/house-1.jpg"></div>
-            <div type="button" onclick="cardDetail(this.id)" id="2" class="card card-body"><img src="http://3.21.225.172:8080/api/house-2.jpg"></div>
-            <div type="button" onclick="cardDetail(this.id)" id="3" class="card card-body"><img src="http://3.21.225.172:8080/api/house-3.jpg"></div>
+    <div class="container-sm container-fluid my-2 w-100">
+        <div class="d-sm-flex flex-row flex-nowrap overflow-auto w-100" id="results">
+
+
+            <!-- SEARCH RESULTS WILL BE DISPLAYED HERE -->
+
         </div>
     </div>
+    <div class="container-fluid"  id="detail">
 
-
-
-
-</div>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <div class="row" id="detail">
-
+        <!-- DETAILED RESULTS WILL BE DISPLAYED HERE -->
 
     </div>
 
 </div>
+
+
+
 
 
 
 <script>
 
-    // JS Functions
-
-    function cardReturns(dataset) {
-        // clears old returns
-        let parent = document.querySelector('#results')
-        if (parent.firstChild) {
-            while (parent.firstChild) {
-                parent.removeChild(parent.firstChild);
-            }
-            console.log("returns emptied")
-        }
-
-        // builds new return cards
-
-        $("#results").append(" <h1>HOWDY</h1> ");
-
-
-    }
-
-    function cardDetail(id) {
-        alert('hello '+ id)
-    }
 
     // jQuery
     $(document).ready(function() {
@@ -178,8 +149,15 @@
                         console.log(searchResults[i].price);
                     }
                 }
+                console.log(searchResults);
 
-                cardReturns(searchResults)
+                if (cardTeardown()){
+                    for(i = 0; i < searchResults.length; i++) {
+                        cardBuild(searchResults[i])
+                    }
+
+                }
+
 
             });
 
@@ -191,7 +169,140 @@
 
     })
 
+    // JS Functions
 
+    function cardTeardown() {
+
+        // clears old returns
+        let parent = document.querySelector('#results')
+        if (parent.firstChild) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+            console.log("returns emptied");
+            return true;
+        }
+    }
+
+    function detailTeardown() {
+
+        // clears old returns
+        console.log(document.querySelector('#detail'));
+        let parent = document.querySelector('#detail');
+        if (parent.firstChild) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+            console.log("details emptied");
+            return true;
+        }
+    }
+
+    function cardBuild(listing) {
+        // builds new return cards
+        console.log('id: '+ listing.id);
+        $("#results").append(
+            `<div type="button" onclick="cardDetail(this.id)" id="` +
+            listing.id +
+            `" class="card card-body bg-darkblue text-darkblue"><img src="http://3.21.225.172:8080/api/house-` +
+            listing.id +
+            `.jpg"><div class="card-footer bg-darkblue"><h1 class="text-yellow">$` +
+            listing.price +
+            `</h1></div></div>`
+        )
+    }
+
+    function cardDetail(listingID) {
+        $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
+            let searchReturn = /*JSON.parse(data)*/data;
+            var listing = searchReturn.filter(list => {
+                return list.id == listingID;
+            });
+            console.log(listingID);
+            console.log(`detail listing: `+listing[0].price);
+            if (detailTeardown()){
+                let fname = listing[0].fname;
+                let lname = listing[0].lname;
+                let yrblt = new Date(listing[0].yrblt);
+                if(listing[0].isnew = true) {
+                    var isnew = "NEW";
+                    console.log(isnew);
+                } else { var isnew = " "
+                    console.log(isnew);};
+                let sqft = listing[0].sqft;
+                let baths = listing[0].baths;
+                let beds = listing[0].beds;
+                let street = listing[0].street;
+                let city = listing[0].city;
+                let state = listing[0].state;
+                let zip = listing[0].zip;
+                let price = listing[0].price;
+                let phone = listing[0].phone;
+                let realtor = listing[0].listing;
+                let imageurl = "http://3.21.225.172:8080/api/"+listing[0].imageurl;
+                console.log(isnew);
+                const d = new Date();
+                console.log(yrblt.getFullYear());
+                let detailChild =
+                    //detail frame elements
+                    `<div class="row rounded-top">
+                    <div class="col-sm-8 bg-darkblue text-yellow">
+                    <img src="` + imageurl +`" class="w-100 mt-2 border-magenta rounded">
+                    </div>
+                    <div class="col-sm-4 bg-darkblue text-yellow">
+                    <div class="mb-6">
+                    <p class="display-2 text-responsive"><b>$ ` + price + `</b></p>
+                    <p class="display-3 text-responsive">` + yrblt.getFullYear() + ` <u>` + isnew + `</u></p>
+                    <p class="h1 text-responsive">` + sqft + ` square feet</p>
+                    <p class="h3 mb-6 text-responsive">` + beds + ` Bedrooms, ` + baths + ` Baths</p><br>
+                    </div>
+                    <div class="mt-6">
+                    <p class="h5 mt-6 text-responsive">` + street + `</p>
+                    <p class="h5 text-responsive">` + city + `, ` + state + `</p>
+                    <p class="h5 text-responsive">` + zip + `</p>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="row rounded-bottom">
+                    <div class="col-sm-12 bg-darkblue text-yellow mb-2">
+                    <div class="my-sm-5">CONTACT: ` + fname + ` ` + lname + ` from ` + realtor + ` -- ` + phone + `</div>
+                    </div></div>`
+                    //end of detail frame elements
+                console.log(detailChild)
+                $("#detail").append(detailChild)
+            }
+
+
+
+        })
+    }
+
+    /*
+<div class="row rounded-top">
+        <div class="col-sm-8 bg-darkblue  text-yellow">
+            <img src="http://3.21.225.172:8080/api/house-5.jpg" class="w-100 mt-2 border-magenta">
+        </div>
+        <div class="col-sm-4 bg-darkblue text-yellow">
+            <div class="mb-6">
+            <p class="display-2 text-responsive"><b>$TEXAS</b></p>
+            <p class="display-3 text-responsive">2021 <u>NEW</u></p>
+            <p class="h1 text-responsive">6200 square feet</p>
+            <p class="h3 mb-6 text-responsive">7 Bedrooms, 4 Baths</p><br>
+            </div>
+            <div class="mt-6">
+            <p class="h5 mt-6 text-responsive">1484 Massa Ct</p>
+            <p class="h5 text-responsive">Collierville, TN</p>
+            <p class="h5 text-responsive">38027</p>
+            </div>
+        </div>
+    </div>
+    <div class="row rounded-bottom" id="detail">
+        <div class="col-sm-12 bg-darkblue text-yellow mb-2">
+            <div class="my-sm-5">CONTACT: Dorci'a Rannila from MIDSOUTH RESIDENTIAL LLC -- (234)345-4234</div>
+        </div>
+    </div>
+        "+listing[0].value+"
+     */
 
 
 
