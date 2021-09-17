@@ -16,19 +16,197 @@
 
 
 </head>
-<header>
+<header class="d-none d-md-block"
+        style="margin-bottom:0;
+        height: 200px;
+        width: 100%;
+        background-position: center center;
+">
 
 </header>
 
-<body>
+<body style="padding-top:px">
+<nav class="navbar navbar-expand-sm sticky-top" style="background-color:#0A2B38; color:#FCD030;">
+    <a class="navbar-brand" href="index.html">
+        <img src="images/logo.png" alt="UR" style="width:100px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="search.html">Search for Homes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="about.html">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Testimonials</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-xl" style="margin-top:30px; margin-bottom:30px;">
+    <div class="row">
+        <div class="col-sm-5">
+            <form>
+                <div class="form-group">
+                    <label for="minprice">How much should you spend?</label>
+                    <input type="number" class="form-control" id="minprice" value="">
+                </div>
+                <div class="form-group">
+                    <label for="maxprice">How much COULD you spend?</label>
+                    <input type="number" class="form-control" id="maxprice" value="">
+                </div>
+            <button id="searchbutton" type="button" class="btn">Submit</button>
+            </form>
+        </div>
+        <div class="col-sm-7 d-none d-md-block">
+
+        </div>
+    </div>
+
+    <div class="container-sm" style="margin-top:30px; margin-bottom:30px;">
+        <div class="d-sm-flex flex-row flex-nowrap overflow-auto" id="results">
+            <div type="button" onclick="cardDetail(this.id)" id="1" class="card card-body"><img src="http://3.21.225.172:8080/api/house-1.jpg"></div>
+            <div type="button" onclick="cardDetail(this.id)" id="2" class="card card-body"><img src="http://3.21.225.172:8080/api/house-2.jpg"></div>
+            <div type="button" onclick="cardDetail(this.id)" id="3" class="card card-body"><img src="http://3.21.225.172:8080/api/house-3.jpg"></div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row" id="detail">
+
+
+    </div>
+
+</div>
+
 
 
 <script>
+
+    // JS Functions
+
+    function cardReturns(dataset) {
+        // clears old returns
+        let parent = document.querySelector('#results')
+        if (parent.firstChild) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+            console.log("returns emptied")
+        }
+
+        // builds new return cards
+
+        $("#results").append(" <h1>HOWDY</h1> ");
+
+
+    }
+
+    function cardDetail(id) {
+        alert('hello '+ id)
+    }
+
+    // jQuery
+    $(document).ready(function() {
+        console.log("page loaded")
+        $("#searchbutton").click(function () {
+            console.log("search initiated");
+            var minPrice = $('#minprice').val();
+            var maxPrice = $('#maxprice').val();
+            console.log(minPrice);
+            console.log(maxPrice);
+            $.get("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
+                let searchReturn = JSON.parse(data);
+
+                console.log("--- UNFILTERED ---")
+                for (let i = 0; i < searchReturn.length; i++) {
+                    console.log(searchReturn[i].price);
+                }
+                console.log(searchReturn.length);
+
+                if (minPrice >= 0 && minPrice != undefined && minPrice != NaN && minPrice > 0) {
+                    var searchResults = searchReturn.filter(listing => listing.price >= minPrice);
+                    console.log("minfiltered");
+                } else {
+                    var searchResults = searchReturn;
+                }
+                if (maxPrice >= 0 && maxPrice != undefined && maxPrice != NaN && maxPrice > 0) {
+                    var searchResults = searchReturn.filter(listing => listing.price <= maxPrice);
+                    console.log("maxfiltered");
+                } else {
+                    var searchResults = searchReturn;
+                }
+
+
+                console.log("--- FILTERED ---");
+                if (searchResults != undefined) {
+                    console.log(searchResults.length);
+                    for (let i = 0; i < searchResults.length; i++) {
+                        console.log(searchResults[i].price);
+                    }
+                }
+
+                searchResults.sort((firstItem, nextItem) => {
+                    if (firstItem.price > nextItem.price) {
+                    return 1;
+                    }
+                    if (firstItem.price < nextItem.price) {
+                    return -1;
+                    }
+                    return 0;
+                });
+
+                console.log("--- SORTED ---")
+                if (searchResults != undefined) {
+                    console.log(searchResults.length)
+                    for (let i = 0; i < searchResults.length; i++) {
+                        console.log(searchResults[i].price);
+                    }
+                }
+
+                cardReturns(searchResults)
+
+            });
+
+
+        });
+
+
+
+
+    })
+
+
+
+
+
+
+
+
+
 
 </script>
 </body>
 
 <footer>
+    <div class="fixed-bottom" style="margin-top:0; background-color:#0A2B38">
+        <p>Footer</p>
+    </div>
 
 </footer>
 </html>

@@ -8,26 +8,59 @@ icon/attention (pink) : #CF1666
 
  */
 
-header {
-    background-color:#3884A3;
-    color:#092834;
+/* styles */
+html *
+{
+    font-family: Georgia,sans-serif;
+}
 }
 body {
     background-color:#F7F0D4;
-    color:#092834;
+    color:#0A2B38;
 }
 footer{
     background-color:#0A2B38;
     color:#FCD030;
 }
 p {color:#0A2B38;}
-h1 {color:#FCD030;}
-h2 {color:#FCD030;}
-h3 {color:#FCD030;}
-h4 {color:#FCD030;}
-h5 {color:#FCD030;}
-h6 {color:#FCD030;}
+h1 {color:#0A2B38;}
+h2 {color:#0A2B38;}
+h3 {color:#0A2B38;}
+h4 {color:#0A2B38;}
+h5 {color:#0A2B38;}
+h6 {color:#0A2B38;}
 
-.text-responsive {
-    font-size: calc(100% + 1vw + 1vh);
+a:link {text-decoration: none; color:#FCD030;}
+a:visited {text-decoration: none; color:#FCD030;}
+a:hover {text-decoration: underline; color:#FCD030;}
+a:active {text-decoration: underline; color:#FCD030;}
+
+
+/* Classes */
+.text-responsive {font-size: calc(100% + 1vw + 1vh);}
+.card-body {
+    min-height: 300px;
+    min-width: 300px;
+    margin-right: 5px;
 }
+
+/* Animations */
+@keyframes background {
+    0%   {background-image:url(/images/background_1_house.jpg);}
+    20%  {background-image:url(/images/background_2_house.jpg);}
+    40%  {background-image:url(/images/background_3_house.jpg);}
+    60%  {background-image:url(/images/background_4_house.jpg);}
+    80%  {background-image:url(/images/background_5_house.jpg);}
+    100% {background-image:url(/images/background_1_house.jpg);}
+}
+
+header {
+    animation-name: background;
+    animation-duration: 30s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in;
+}
+
+
+
+
