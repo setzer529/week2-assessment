@@ -39,7 +39,7 @@
 </header>
 
 
-<body style="padding-top:0px">
+<body style="padding-top:0">
 <nav class="navbar navbar-expand sticky-top" style="background-color:#0A2B38; color:#FCD030;">
     <a class="navbar-brand" href="index.html">
         <img src="images/logo.png" alt="UR" style="width:100px;">
@@ -56,7 +56,7 @@
                 <a class="nav-link" href="about.html">About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Testimonials</a>
+                <a class="nav-link" href="testimonials.html">Testimonials</a>
             </li>
         </ul>
     </div>
@@ -64,32 +64,109 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md d-none d-md-block" style="font-size:200%;">
-            <p class="text-darkblue" >In 2019, over 13 million Americans owned homes worth less than they paid</p>
+            <i class="text-darkblue" >
+                In 2019, over 13 million Americans owned homes worth less than they owed on their mortgage...
+            </i>
         </div>
-        <div class="col-md d-none d-md-block" style="font-size:400%; text-align:center";>
+        <div class="col-md d-none d-md-block" style="font-size:400%; text-align:center;">
             <h1 class="text-darkblue display-1 text-responsive font-weight-bold display-2"><b>Now You</b></h1>
             <h1 class="text-darkblue display-1 text-responsive font-weight-bold display-2"><b>Can Too!</b></h1>
         </div>
     </div>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" id="featured">
+    <div class="row rounded-top">
+        <div class="col-md-8 bg-darkblue text-yellow">
+            <div class="text-responsive display-1 font-weight-bold">
+            This Palatial Estate Could be Legally Yours!
+            </div>
+        </div>
+
+        <div class="col-md-4 bg-darkblue text-magenta">
+            <div class="container-fluid text-responsive">
+                <p class="text-magenta" style="font-size:75%;"><i>Think about it!</i></p>
+                <p class="text-magenta" style="font-size:75%;"><i>(but not twice)</i></p>
+            </div>
+        </div>
+    </div>
 
 </div>
 
 <script>
-    // JS Functions
+
 
     // jQuery
     $(document).ready(function() {
         console.log("page loaded")
+        console.log("search initiated");
+        $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
+            var searchResults = JSON.parse(data);
+            searchResults.sort((firstItem, nextItem) => {
+                if (firstItem.price < nextItem.price) {
+                    return 1;
+                }
+                if (firstItem.price > nextItem.price) {
+                    return -1;
+                }
+                return 0;
+            });
+            featuredListing(searchResults[0])
+
+
+
+        });
+
+
+
+
+
+
+
+
     })
+
+    // JS Functions
+
+    function featuredListing(featured) {
+        let yrblt = new Date(featured.yrblt);
+        if(featured.isnew = true) {var isnew = "NEW";} else { var isnew = ""}
+        let imageurl = "http://3.21.225.172:8080/api/"+featured.imageurl;
+        let featuredChild =
+            //detail frame elements
+            `<div class="row rounded-top">
+                    <div class="col-sm-8 bg-darkblue text-yellow">
+                    <img src="` + imageurl +`" class="w-100 mt-2 rounded">
+                    </div>
+                    <div class="col-sm-4 bg-darkblue">
+                    <div class="mb-6 text-yellow">
+                    <p class="display-2 text-responsive"><b>$ ` + featured.price + `</b></p>
+                    <p class="display-3 text-responsive">` + yrblt.getFullYear() + ` <u>` + isnew + `</u></p>
+                    <p class="h1 text-responsive">` + featured.sqft + ` square feet</p>
+                    <p class="h3 mb-6 text-responsive">` + featured.beds + ` Bedrooms, ` + featured.baths + ` Baths</p><br>
+                    </div>
+                    <div class="mt-6 text-magenta">
+                    <p class="h6 mt-6 text-responsive">` + featured.street + `</p>
+                    <p class="h6 text-responsive">` + featured.city + `, ` + featured.state + `</p>
+                    <p class="h6 text-responsive">` + featured.zip + `</p>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="row rounded-bottom">
+                    <div class="col-sm-12 bg-darkblue text-magenta mb-2">
+                    <div class="my-sm-5">Interested? Call ` + featured.fname + ` ` + featured.lname + ` from ` + featured.listing + ` -- ` + featured.phone + `</div>
+                    </div></div>`
+        //end of detail frame elements
+        $("#featured").append(featuredChild)
+    }
+
 
 </script>
 </body>
 
 <footer style="position:fixed; bottom:0; alignment:right">
     <div class="fixed-bottom" style="margin-top:0; background-color:#0A2B38">
-        <p>Footer</p>
+        <a href="#" class="text-magenta">Contact Us</a>
     </div>
 </footer>
 </html>
+

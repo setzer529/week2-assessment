@@ -13,7 +13,7 @@ html *
 {
     font-family: Georgia,sans-serif;
 }
-}
+
 body {
     background-color:#F7F0D4;
     color:#0A2B38;
@@ -38,6 +38,7 @@ a:active {text-decoration: underline; color:#FCD030;}
 
 /* Classes */
 .text-responsive {font-size: calc(100% + 1vw + 1vh);}
+.text-responsive-sm {font-size: calc(50% + 1vw + 1vh);}
 .card-body {
     min-height: 300px;
     min-width: 300px;

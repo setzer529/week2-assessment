@@ -22,6 +22,18 @@
         width: 100%;
         background-position: center center;
 ">
+    <div class="display-1 mt-8 text-responsive align-content-center container-fluid">
+        <p class="">
+            <mark style="position:relative"
+                  class="opacity-75 rounded display-1 text-yellow font-weight-bold text-responsive py-0 motd">
+                We Have Homes</mark>
+        </p>
+        <p class="">
+            <mark style="position:relative"
+                  class="opacity-75 rounded display-1 text-magenta font-weight-bold text-responsive py-0 motd">
+                In Excess of Every Budget!</mark>
+        </p>
+    </div>
 
 </header>
 
@@ -42,7 +54,7 @@
                 <a class="nav-link" href="about.html">About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Testimonials</a>
+                <a class="nav-link" href="testimonials.html">Testimonials</a>
             </li>
         </ul>
     </div>
@@ -99,69 +111,32 @@
             console.log("search initiated");
             var minPrice = $('#minprice').val();
             var maxPrice = $('#maxprice').val();
-            console.log(minPrice);
-            console.log(maxPrice);
-            $.get("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
+            $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
                 let searchReturn = JSON.parse(data);
-
-                console.log("--- UNFILTERED ---")
-                for (let i = 0; i < searchReturn.length; i++) {
-                    console.log(searchReturn[i].price);
-                }
-                console.log(searchReturn.length);
-
                 if (minPrice >= 0 && minPrice != undefined && minPrice != NaN && minPrice > 0) {
                     var searchResults = searchReturn.filter(listing => listing.price >= minPrice);
-                    console.log("minfiltered");
                 } else {
                     var searchResults = searchReturn;
                 }
                 if (maxPrice >= 0 && maxPrice != undefined && maxPrice != NaN && maxPrice > 0) {
                     var searchResults = searchReturn.filter(listing => listing.price <= maxPrice);
-                    console.log("maxfiltered");
                 } else {
                     var searchResults = searchReturn;
                 }
-
-
-                console.log("--- FILTERED ---");
-                if (searchResults != undefined) {
-                    console.log(searchResults.length);
-                    for (let i = 0; i < searchResults.length; i++) {
-                        console.log(searchResults[i].price);
-                    }
-                }
-
                 searchResults.sort((firstItem, nextItem) => {
-                    if (firstItem.price > nextItem.price) {
+                    if (firstItem.price < nextItem.price) {
                     return 1;
                     }
-                    if (firstItem.price < nextItem.price) {
+                    if (firstItem.price > nextItem.price) {
                     return -1;
                     }
                     return 0;
                 });
-
-                console.log("--- SORTED ---")
-                if (searchResults != undefined) {
-                    console.log(searchResults.length)
-                    for (let i = 0; i < searchResults.length; i++) {
-                        console.log(searchResults[i].price);
-                    }
+                cardTeardown()
+                for(i = 0; i < searchResults.length; i++) {
+                    cardBuild(searchResults[i])
                 }
-                console.log(searchResults);
-
-                if (cardTeardown()){
-                    for(i = 0; i < searchResults.length; i++) {
-                        cardBuild(searchResults[i])
-                    }
-
-                }
-
-
             });
-
-
         });
 
 
@@ -179,7 +154,6 @@
             while (parent.firstChild) {
                 parent.removeChild(parent.firstChild);
             }
-            console.log("returns emptied");
             return true;
         }
     }
@@ -187,20 +161,17 @@
     function detailTeardown() {
 
         // clears old returns
-        console.log(document.querySelector('#detail'));
         let parent = document.querySelector('#detail');
         if (parent.firstChild) {
             while (parent.firstChild) {
                 parent.removeChild(parent.firstChild);
             }
-            console.log("details emptied");
             return true;
         }
     }
 
     function cardBuild(listing) {
         // builds new return cards
-        console.log('id: '+ listing.id);
         $("#results").append(
             `<div type="button" onclick="cardDetail(this.id)" id="` +
             listing.id +
@@ -218,17 +189,13 @@
             var listing = searchReturn.filter(list => {
                 return list.id == listingID;
             });
-            console.log(listingID);
-            console.log(`detail listing: `+listing[0].price);
             if (detailTeardown()){
                 let fname = listing[0].fname;
                 let lname = listing[0].lname;
                 let yrblt = new Date(listing[0].yrblt);
                 if(listing[0].isnew = true) {
                     var isnew = "NEW";
-                    console.log(isnew);
-                } else { var isnew = " "
-                    console.log(isnew);};
+                } else { var isnew = ""};
                 let sqft = listing[0].sqft;
                 let baths = listing[0].baths;
                 let beds = listing[0].beds;
@@ -240,9 +207,6 @@
                 let phone = listing[0].phone;
                 let realtor = listing[0].listing;
                 let imageurl = "http://3.21.225.172:8080/api/"+listing[0].imageurl;
-                console.log(isnew);
-                const d = new Date();
-                console.log(yrblt.getFullYear());
                 let detailChild =
                     //detail frame elements
                     `<div class="row rounded-top">
@@ -268,7 +232,6 @@
                     <div class="my-sm-5">CONTACT: ` + fname + ` ` + lname + ` from ` + realtor + ` -- ` + phone + `</div>
                     </div></div>`
                     //end of detail frame elements
-                console.log(detailChild)
                 $("#detail").append(detailChild)
             }
 
@@ -277,46 +240,12 @@
         })
     }
 
-    /*
-<div class="row rounded-top">
-        <div class="col-sm-8 bg-darkblue  text-yellow">
-            <img src="http://3.21.225.172:8080/api/house-5.jpg" class="w-100 mt-2 border-magenta">
-        </div>
-        <div class="col-sm-4 bg-darkblue text-yellow">
-            <div class="mb-6">
-            <p class="display-2 text-responsive"><b>$TEXAS</b></p>
-            <p class="display-3 text-responsive">2021 <u>NEW</u></p>
-            <p class="h1 text-responsive">6200 square feet</p>
-            <p class="h3 mb-6 text-responsive">7 Bedrooms, 4 Baths</p><br>
-            </div>
-            <div class="mt-6">
-            <p class="h5 mt-6 text-responsive">1484 Massa Ct</p>
-            <p class="h5 text-responsive">Collierville, TN</p>
-            <p class="h5 text-responsive">38027</p>
-            </div>
-        </div>
-    </div>
-    <div class="row rounded-bottom" id="detail">
-        <div class="col-sm-12 bg-darkblue text-yellow mb-2">
-            <div class="my-sm-5">CONTACT: Dorci'a Rannila from MIDSOUTH RESIDENTIAL LLC -- (234)345-4234</div>
-        </div>
-    </div>
-        "+listing[0].value+"
-     */
-
-
-
-
-
-
-
-
 </script>
 </body>
 
 <footer>
     <div class="fixed-bottom" style="margin-top:0; background-color:#0A2B38">
-        <p>Footer</p>
+        <a href="#" class="text-magenta">Contact Us</a>
     </div>
 
 </footer>
