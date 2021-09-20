@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en-US" xml:lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <link rel="stylesheet" href="/css/bootstrap.css/">
+    <link rel="stylesheet" href="css/default.css">
+    <meta charset="UTF-8">
+    <meta name="author" content="James Howell">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+</head>
+<header class="d-none d-md-block"
+        style="margin-bottom:0;
+        height: 200px;
+        width: 100%;
+        background-position: center center;
+">
+    <div class="display-1 mt-8 text-responsive align-content-center container-fluid">
+        <p class="">
+            <mark style="position:relative"
+                  class="opacity-75 rounded display-1 text-yellow font-weight-bold text-responsive py-0 motd">
+                We Have Homes</mark>
+        </p>
+        <p class="">
+            <mark style="position:relative"
+                  class="opacity-75 rounded display-1 text-magenta font-weight-bold text-responsive py-0 motd">
+                In Excess of Every Budget!</mark>
+        </p>
+    </div>
+
+</header>
+
+<body style="padding-top:0">
+<nav class="navbar navbar-expand sticky-top" style="background-color:#0A2B38; color:#FCD030;">
+    <a class="navbar-brand" href="index.html">
+        <img src="images/logo.png" alt="UR" style="width:100px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="search.html">Search for Homes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="about.html">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="testimonials.html">Testimonials</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container-xl" style="margin-top:30px; margin-bottom:30px;">
+    <div class="row">
+        <div class="col-sm-5">
+            <form>
+                <div class="form-group my-2">
+                    <label for="minprice">How much should you spend?</label>
+                    <input type="number" class="form-control" id="minprice" value="">
+                </div>
+                <div class="form-group my-2">
+                    <label for="maxprice">How much COULD you spend?</label>
+                    <input type="number" class="form-control" id="maxprice" value="">
+                </div>
+            <button id="searchbutton" type="button" class="btn bg-darkblue text-yellow my-2">Submit</button>
+            </form>
+        </div>
+        <div class="col-md-7 d-none d-md-block">
+
+        </div>
+    </div>
+
+    <div class="container-sm container-fluid my-2 w-100">
+        <div class="d-sm-flex flex-row flex-nowrap overflow-auto w-100" id="results">
+
+
+            <!-- SEARCH RESULTS WILL BE DISPLAYED HERE -->
+
+        </div>
+    </div>
+    <div class="container-fluid"  id="detail">
+
+        <!-- DETAILED RESULTS WILL BE DISPLAYED HERE -->
+
+    </div>
+
+</div>
+
+
+
+
+
+
+<script>
+
+
+    // jQuery
+    $(document).ready(function() {
+        console.log("page loaded")
+        $("#searchbutton").click(function () {
+            console.log("search initiated");
+            var minPrice = $('#minprice').val();
+            var maxPrice = $('#maxprice').val();
+            $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
+                let searchReturn = JSON.parse(data);
+                if (minPrice >= 0 && minPrice != undefined && minPrice != NaN && minPrice > 0) {
+                    var searchResults = searchReturn.filter(listing => listing.price >= minPrice);
+                } else {
+                    var searchResults = searchReturn;
+                }
+                if (maxPrice >= 0 && maxPrice != undefined && maxPrice != NaN && maxPrice > 0) {
+                    var searchResults = searchReturn.filter(listing => listing.price <= maxPrice);
+                } else {
+                    var searchResults = searchReturn;
+                }
+                searchResults.sort((firstItem, nextItem) => {
+                    if (firstItem.price < nextItem.price) {
+                    return 1;
+                    }
+                    if (firstItem.price > nextItem.price) {
+                    return -1;
+                    }
+                    return 0;
+                });
+                cardTeardown()
+                for(i = 0; i < searchResults.length; i++) {
+                    cardBuild(searchResults[i])
+                }
+            });
+        });
+
+
+
+
+    })
+
+    // JS Functions
+
+    function cardTeardown() {
+
+        // clears old returns
+        let parent = document.querySelector('#results')
+        if (parent.firstChild) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+            return true;
+        }
+    }
+
+    function detailTeardown() {
+
+        // clears old returns
+        let parent = document.querySelector('#detail');
+        if (parent.firstChild) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+            return true;
+        }
+    }
+
+    function cardBuild(listing) {
+        // builds new return cards
+        $("#results").append(
+            `<div type="button" onclick="cardDetail(this.id)" id="` +
+            listing.id +
+            `" class="card card-body bg-darkblue text-darkblue"><img src="http://3.21.225.172:8080/api/house-` +
+            listing.id +
+            `.jpg"><div class="card-footer bg-darkblue"><h1 class="text-yellow">$` +
+            listing.price +
+            `</h1></div></div>`
+        )
+    }
+
+    function cardDetail(listingID) {
+        $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
+            let searchReturn = /*JSON.parse(data)*/data;
+            var listing = searchReturn.filter(list => {
+                return list.id == listingID;
+            });
+            if (detailTeardown()){
+                let fname = listing[0].fname;
+                let lname = listing[0].lname;
+                let yrblt = new Date(listing[0].yrblt);
+                if(listing[0].isnew = true) {
+                    var isnew = "NEW";
+                } else { var isnew = ""};
+                let sqft = listing[0].sqft;
+                let baths = listing[0].baths;
+                let beds = listing[0].beds;
+                let street = listing[0].street;
+                let city = listing[0].city;
+                let state = listing[0].state;
+                let zip = listing[0].zip;
+                let price = listing[0].price;
+                let phone = listing[0].phone;
+                let realtor = listing[0].listing;
+                let imageurl = "http://3.21.225.172:8080/api/"+listing[0].imageurl;
+                let detailChild =
+                    //detail frame elements
+                    `<div class="row rounded-top">
+                    <div class="col-sm-8 bg-darkblue text-yellow">
+                    <img src="` + imageurl +`" class="w-100 mt-2 border-magenta rounded">
+                    </div>
+                    <div class="col-sm-4 bg-darkblue text-yellow">
+                    <div class="mb-6">
+                    <p class="display-2 text-responsive"><b>$ ` + price + `</b></p>
+                    <p class="display-3 text-responsive">` + yrblt.getFullYear() + ` <u>` + isnew + `</u></p>
+                    <p class="h1 text-responsive">` + sqft + ` square feet</p>
+                    <p class="h3 mb-6 text-responsive">` + beds + ` Bedrooms, ` + baths + ` Baths</p><br>
+                    </div>
+                    <div class="mt-6">
+                    <p class="h5 mt-6 text-responsive">` + street + `</p>
+                    <p class="h5 text-responsive">` + city + `, ` + state + `</p>
+                    <p class="h5 text-responsive">` + zip + `</p>
+                    </div>
+                    </div>
+                    </div>
+                    <div class="row rounded-bottom">
+                    <div class="col-sm-12 bg-darkblue text-yellow mb-2">
+                    <div class="my-sm-5">CONTACT: ` + fname + ` ` + lname + ` from ` + realtor + ` -- ` + phone + `</div>
+                    </div></div>`
+                    //end of detail frame elements
+                $("#detail").append(detailChild)
+            }
+
+
+
+        })
+    }
+
+</script>
+</body>
+
+<footer>
+    <div class="fixed-bottom" style="margin-top:0; background-color:#0A2B38">
+        <a href="#" class="text-magenta">Contact Us</a>
+    </div>
+
+</footer>
+</html>
