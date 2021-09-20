@@ -120,7 +120,7 @@
         var detailID = JSON.stringify(featured.id);
         localStorage.setItem("detailID", detailID);
         let yrblt = new Date(featured.yrblt);
-        if(featured.isnew = true) {var isnew = "NEW";} else { var isnew = ""}
+        if(featured.isnew == true) {var isnew = "NEW";} else { var isnew = ""}
         let imageurl = "http://3.21.225.172:8080/api/"+featured.imageurl;
         let featuredChild =
             //detail frame elements

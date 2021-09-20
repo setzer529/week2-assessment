@@ -113,12 +113,12 @@
             var maxPrice = $('#maxprice').val();
             $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
                 let searchReturn = JSON.parse(data);
-                if (minPrice >= 0 && minPrice != undefined && minPrice != NaN && minPrice > 0) {
+                if (minPrice >= 0 && minPrice != undefined && minPrice > 0) {
                     var searchResults = searchReturn.filter(listing => listing.price >= minPrice);
                 } else {
                     var searchResults = searchReturn;
                 }
-                if (maxPrice >= 0 && maxPrice != undefined && maxPrice != NaN && maxPrice > 0) {
+                if (maxPrice >= 0 && maxPrice != undefined && maxPrice > 0) {
                     var searchResults = searchReturn.filter(listing => listing.price <= maxPrice);
                 } else {
                     var searchResults = searchReturn;
@@ -188,7 +188,7 @@
 
     function cardDetail(listingID) {
         //builds new detail pane
-        $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
+        $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data) {
             let searchReturn = data;
             var listing = searchReturn.filter(list => {
                 return list.id == listingID;
@@ -199,9 +199,9 @@
                 let fname = listing[0].fname;
                 let lname = listing[0].lname;
                 let yrblt = new Date(listing[0].yrblt);
-                if(listing[0].isnew = true) {
+                if(listing[0].isnew == true) {
                     var isnew = "NEW";
-                } else { var isnew = ""};
+                } else { var isnew = "";}
                 let sqft = listing[0].sqft;
                 let baths = listing[0].baths;
                 let beds = listing[0].beds;
