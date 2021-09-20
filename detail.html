@@ -60,33 +60,6 @@
     </div>
 </nav>
 
-<div class="container-xl" style="margin-top:30px; margin-bottom:30px;">
-    <div class="row">
-        <div class="col-sm-5">
-            <form>
-                <div class="form-group my-2">
-                    <label for="minprice">How much should you spend?</label>
-                    <input type="number" class="form-control" id="minprice" value="">
-                </div>
-                <div class="form-group my-2">
-                    <label for="maxprice">How much COULD you spend?</label>
-                    <input type="number" class="form-control" id="maxprice" value="">
-                </div>
-            <button id="searchbutton" type="button" class="btn bg-darkblue text-yellow my-2">Submit</button>
-            </form>
-        </div>
-        <div class="col-md-7 d-none d-md-block">
-
-        </div>
-    </div>
-
-    <div class="container-md my-2 overflow-auto" style="height:600px " id="results">
-
-        <!-- SEARCH RESULTS WILL BE DISPLAYED HERE -->
-
-
-    </div>
-
     <div class="container-fluid"  id="detail">
 
         <!-- DETAILED RESULTS WILL BE DISPLAYED HERE -->
@@ -106,59 +79,16 @@
     // jQuery
     $(document).ready(function() {
         console.log("page loaded")
-        $("#searchbutton").click(function () {
-            console.log("search initiated");
-            var minPrice = $('#minprice').val();
-            var maxPrice = $('#maxprice').val();
-            $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
-                let searchReturn = JSON.parse(data);
-                if (minPrice >= 0 && minPrice != undefined && minPrice != NaN && minPrice > 0) {
-                    var searchResults = searchReturn.filter(listing => listing.price >= minPrice);
-                } else {
-                    var searchResults = searchReturn;
-                }
-                if (maxPrice >= 0 && maxPrice != undefined && maxPrice != NaN && maxPrice > 0) {
-                    var searchResults = searchReturn.filter(listing => listing.price <= maxPrice);
-                } else {
-                    var searchResults = searchReturn;
-                }
-                searchResults.sort((firstItem, nextItem) => {
-                    if (firstItem.price < nextItem.price) {
-                    return 1;
-                    }
-                    if (firstItem.price > nextItem.price) {
-                    return -1;
-                    }
-                    return 0;
-                });
-                cardTeardown()
-                buildCode = `<div class="row  my-2">`
-                for(i = 0; i < searchResults.length; i++) {
-                    if ((i % 3) == 0 && i != 0 && i != (searchResults.length + 1)) {
-                        buildCode += `</div><div class="row  my-2">`;
-                    }
-                    buildCode += cardBuild(searchResults[i]);
+        console.log("search initiated");
+        let listingID = JSON.parse(localStorage.getItem("detailID"));
+        cardDetail(listingID);
 
-                }
-                buildCode += `</div>`
-                $("#results").append(buildCode);
-            });
-        });
-    })
+
+
+        })
+
 
     // JS Functions
-
-    function cardTeardown() {
-
-        // clears old returns
-        let parent = document.querySelector('#results')
-        if (parent.firstChild) {
-            while (parent.firstChild) {
-                parent.removeChild(parent.firstChild);
-            }
-            return true;
-        }
-    }
 
     function detailTeardown() {
 
@@ -172,21 +102,6 @@
         }
     }
 
-    function cardBuild(listing) {
-        //builds new return card code
-        let newCode = (
-            `<div class="col-md-4">` +
-            `<div type="button" onclick="cardDetail(this.id)" id="` +
-            listing.id +
-            `" class="card card-body bg-darkblue text-darkblue"><img src="http://3.21.225.172:8080/api/house-` +
-            listing.id +
-            `.jpg"><div class="card-footer bg-darkblue"><h1 class="text-yellow">$` +
-            listing.price +
-            `</h1></div></div></div>`
-        );
-        return newCode
-    }
-
     function cardDetail(listingID) {
         $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
             let searchReturn = data;
@@ -194,8 +109,7 @@
                 return list.id == listingID;
             });
             if (detailTeardown()){
-                var detailID = JSON.stringify(listingID);
-                localStorage.setItem("detailID", detailID);
+                localStorage.setItem(detailID, JSON.stringify(listingID))
                 let fname = listing[0].fname;
                 let lname = listing[0].lname;
                 let yrblt = new Date(listing[0].yrblt);
@@ -230,7 +144,7 @@
                     <p class="h5 mt-6 text-responsive">` + street + `</p>
                     <p class="h5 text-responsive">` + city + `, ` + state + `</p>
                     <p class="h5 text-responsive">` + zip + `</p>
-                    <a href="/week2-assessment/details.html">
+                    <a href="detail.html">
                     <button type="button" class="btn bg-darkblue text-yellow my-2" >Details</button>
                     </a>
                     </div>
