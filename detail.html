@@ -26,12 +26,12 @@
         <p class="">
             <mark style="position:relative"
                   class="opacity-75 rounded display-1 text-yellow font-weight-bold text-responsive py-0 motd">
-                We Have Homes</mark>
+                Don't Let 'Should'</mark>
         </p>
         <p class="">
             <mark style="position:relative"
                   class="opacity-75 rounded display-1 text-magenta font-weight-bold text-responsive py-0 motd">
-                In Excess of Every Budget!</mark>
+                Get in the Way of 'Could'!</mark>
         </p>
     </div>
 
@@ -75,92 +75,53 @@
 
 <script>
 
-
     // jQuery
     $(document).ready(function() {
-        console.log("page loaded")
-        console.log("search initiated");
-        let listingID = JSON.parse(localStorage.getItem("detailID"));
-        cardDetail(listingID);
-
-
-
-        })
-
+        $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
+            var searchResults = JSON.parse(data);
+            let listingID = JSON.parse(localStorage.getItem("detailID"));
+            var listing = searchResults.filter(list => {
+                            return list.id == listingID;
+                        });
+            featuredListing(listing[0])
+        });
+    })
 
     // JS Functions
 
-    function detailTeardown() {
-
-        // clears old returns
-        let parent = document.querySelector('#detail');
-        if (parent.firstChild) {
-            while (parent.firstChild) {
-                parent.removeChild(parent.firstChild);
-            }
-            return true;
-        }
-    }
-
-    function cardDetail(listingID) {
-        $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
-            let searchReturn = data;
-            var listing = searchReturn.filter(list => {
-                return list.id == listingID;
-            });
-            if (detailTeardown()){
-                localStorage.setItem(detailID, JSON.stringify(listingID))
-                let fname = listing[0].fname;
-                let lname = listing[0].lname;
-                let yrblt = new Date(listing[0].yrblt);
-                if(listing[0].isnew = true) {
-                    var isnew = "NEW";
-                } else { var isnew = ""};
-                let sqft = listing[0].sqft;
-                let baths = listing[0].baths;
-                let beds = listing[0].beds;
-                let street = listing[0].street;
-                let city = listing[0].city;
-                let state = listing[0].state;
-                let zip = listing[0].zip;
-                let price = listing[0].price;
-                let phone = listing[0].phone;
-                let realtor = listing[0].listing;
-                let imageurl = "http://3.21.225.172:8080/api/"+listing[0].imageurl;
-                let detailChild =
-                    //detail frame elements
-                    `<div class="row rounded-top">
-                    <div class="col-md-8 bg-darkblue text-yellow">
-                    <img src="` + imageurl +`" class="w-100 mt-2 border-magenta rounded">
+    function featuredListing(featured) {
+        let yrblt = new Date(featured.yrblt);
+        if(featured.isnew = true) {var isnew = "NEW";} else { var isnew = ""}
+        let imageurl = "http://3.21.225.172:8080/api/"+featured.imageurl;
+        let featuredChild =
+            //detail frame elements
+            `<div class="row rounded-top">
+                    <div class="col-sm-8 bg-darkblue text-yellow">
+                    <img src="` + imageurl +`" class="w-100 mt-2 rounded">
                     </div>
-                    <div class="col-md-4 bg-darkblue text-yellow">
-                    <div class="mb-6">
-                    <p class="display-2 text-responsive"><b>$ ` + price + `</b></p>
+                    <div class="col-sm-4 bg-darkblue">
+                    <div class="mb-6 text-yellow">
+                    <p class="display-2 text-responsive"><b>$ ` + featured.price + `</b></p>
                     <p class="display-3 text-responsive">` + yrblt.getFullYear() + ` <u>` + isnew + `</u></p>
-                    <p class="h1 text-responsive">` + sqft + ` square feet</p>
-                    <p class="h3 mb-6 text-responsive">` + beds + ` Bedrooms, ` + baths + ` Baths</p><br>
+                    <p class="h1 text-responsive">` + featured.sqft + ` square feet</p>
+                    <p class="h3 mb-6 text-responsive">` + featured.beds + ` Bedrooms, ` + featured.baths + ` Baths</p><br>
                     </div>
-                    <div class="mt-6">
-                    <p class="h5 mt-6 text-responsive">` + street + `</p>
-                    <p class="h5 text-responsive">` + city + `, ` + state + `</p>
-                    <p class="h5 text-responsive">` + zip + `</p>
-                    <a href="detail.html">
-                    <button type="button" class="btn bg-darkblue text-yellow my-2" >Details</button>
+                    <div class="mt-6 text-magenta">
+                    <p class="h6 mt-6 text-responsive">` + featured.street + `</p>
+                    <p class="h6 text-responsive">` + featured.city + `, ` + featured.state + `</p>
+                    <p class="h6 text-responsive">` + featured.zip + `</p>
+                    <a href="/week2-assessment/search.html">
+                    <button type="button" class="btn bg-magenta text-yellow my-2" >Back to Search</button>
                     </a>
                     </div>
                     </div>
                     </div>
                     <div class="row rounded-bottom">
-                    <div class="col-sm-12 bg-darkblue text-yellow mb-2">
-                    <div class="my-sm-5">CONTACT: ` + fname + ` ` + lname + ` from ` + realtor + ` -- ` + phone + `</div>
+                    <div class="col-sm-12 bg-darkblue text-magenta mb-2">
+                    <div class="my-sm-5">Interested? Call ` + featured.fname + ` ` + featured.lname + ` from ` + featured.listing + ` -- ` + featured.phone + `</div>
                     </div></div>`
-                    //end of detail frame elements
-                $("#detail").append(detailChild)
-            }
-
-
-
-        })
+        //end of detail frame elements
+        $("#detail").append(featuredChild)
     }
 
 </script>
@@ -174,6 +135,3 @@
 </footer>
 </html>
 
-
-
-for (i=0; i < results.length < i + 6) {
