@@ -492,6 +492,18 @@ a.text-magenta:hover, a.text-magenta:focus {
     100% {left:0px; opacity:100%;}
 }
 
+@keyframes colorize {
+    0%   {
+        -webkit-filter: grayscale(100%);
+        filter: grayscale(100%);
+    }
+    100% {
+        -webkit-filter: grayscale(0%);
+        filter: grayscale(0%);
+    }
+}
+
+
 header {
     animation-name: background;
     animation-duration: 30s;
@@ -500,11 +512,19 @@ header {
 }
 
 .motd {
-    animation-name:motd;
+    animation-name: motd;
     animation-duration:2s;
     animation-iteration-count:1;
     animation-timing-function: ease-out;
 }
+
+.colorize {
+    animation-name: colorize;
+    animation-duration:5s;
+}
+
+
+
 
 
 

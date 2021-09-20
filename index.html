@@ -117,6 +117,8 @@
     // JS Functions
 
     function featuredListing(featured) {
+        var detailID = JSON.stringify(featured.id);
+        localStorage.setItem("detailID", detailID);
         let yrblt = new Date(featured.yrblt);
         if(featured.isnew = true) {var isnew = "NEW";} else { var isnew = ""}
         let imageurl = "http://3.21.225.172:8080/api/"+featured.imageurl;
@@ -124,7 +126,7 @@
             //detail frame elements
             `<div class="row rounded-top">
                     <div class="col-sm-8 bg-darkblue text-yellow">
-                    <img src="` + imageurl +`" class="w-100 mt-2 rounded">
+                    <img src="` + imageurl +`" class="w-100 mt-2 rounded colorize">
                     </div>
                     <div class="col-sm-4 bg-darkblue">
                     <div class="mb-6 text-yellow">
@@ -137,6 +139,9 @@
                     <p class="h6 mt-6 text-responsive">` + featured.street + `</p>
                     <p class="h6 text-responsive">` + featured.city + `, ` + featured.state + `</p>
                     <p class="h6 text-responsive">` + featured.zip + `</p>
+                    <a href="/week2-assessment/detail.html">
+                    <button type="button" class="btn bg-magenta text-yellow my-2" >Details</button>
+                    </a>
                     </div>
                     </div>
                     </div>
