@@ -106,6 +106,7 @@
     // jQuery
     $(document).ready(function() {
         console.log("page loaded")
+        // search button behavior
         $("#searchbutton").click(function () {
             console.log("search initiated");
             var minPrice = $('#minprice').val();
@@ -149,8 +150,7 @@
     // JS Functions
 
     function cardTeardown() {
-
-        // clears old returns
+        // clears old search result returns
         let parent = document.querySelector('#results')
         if (parent.firstChild) {
             while (parent.firstChild) {
@@ -161,8 +161,7 @@
     }
 
     function detailTeardown() {
-
-        // clears old returns
+        // clears old detail returns
         let parent = document.querySelector('#detail');
         if (parent.firstChild) {
             while (parent.firstChild) {
@@ -188,6 +187,7 @@
     }
 
     function cardDetail(listingID) {
+        //builds new detail pane
         $.getJSON("http://3.21.225.172:8080/api/realestate/all", function (data, status) {
             let searchReturn = data;
             var listing = searchReturn.filter(list => {
