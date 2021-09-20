@@ -112,16 +112,12 @@
             var minPrice = $('#minprice').val();
             var maxPrice = $('#maxprice').val();
             $.get("http://3.21.225.172:8080/api/realestate/all", function (data) {
-                let searchReturn = JSON.parse(data);
+                var searchResults = JSON.parse(data);
                 if (minPrice >= 0 && minPrice != undefined && minPrice > 0) {
-                    var searchResults = searchReturn.filter(listing => listing.price >= minPrice);
-                } else {
-                    var searchResults = searchReturn;
+                    var searchResults = searchResults.filter(listing => listing.price >= minPrice);
                 }
                 if (maxPrice >= 0 && maxPrice != undefined && maxPrice > 0) {
-                    var searchResults = searchReturn.filter(listing => listing.price <= maxPrice);
-                } else {
-                    var searchResults = searchReturn;
+                    var searchResults = searchResults.filter(listing => listing.price <= maxPrice);
                 }
                 searchResults.sort((firstItem, nextItem) => {
                     if (firstItem.price < nextItem.price) {
@@ -241,7 +237,7 @@
                     <div class="my-sm-5">CONTACT: ` + fname + ` ` + lname + ` from ` + realtor + ` -- ` + phone + `</div>
                     </div></div>`
                     //end of detail frame elements
-                $("#detail").append(detailChild)
+                $("#detail").append(detailChild);
             }
         })
     }
